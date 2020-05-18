@@ -5,6 +5,7 @@ const core = require("@actions/core");
 const github = require("@actions/github");
 const aws = require("aws-sdk");
 const assert = require("assert");
+const fs = require("fs");
 
 module.exports = {
   runBuild,
@@ -144,6 +145,10 @@ function inputs2Parameters(inputs) {
     envPassthrough = []
   } = inputs;
 
+  const buildspec = buildspecOverride
+    ? fs.readFileSync(buildspecOverride).toString("utf-8")
+    : undefined;
+
   // const sourceTypeOverride = "GITHUB";
   // const sourceLocationOverride = `https://github.com/${owner}/${repo}.git`;
 
@@ -160,7 +165,7 @@ function inputs2Parameters(inputs) {
     // sourceVersion,
     // sourceTypeOverride,
     // sourceLocationOverride,
-    buildspecOverride,
+    buildspecOverride: buildspec,
     environmentVariablesOverride
   };
 }
